@@ -1,6 +1,7 @@
 package fr.rootar.dto;
 
 import lombok.Data;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import javax.enterprise.context.ApplicationScoped;
 
@@ -8,11 +9,12 @@ import javax.enterprise.context.ApplicationScoped;
 
 public class UtilisateurDto {
 
-    private int idUtilisateur;
-    private String prenom;
-    private String nom;
+    @Schema(required = true,example = "tata")
     private String login;
+    @Schema(required = true,example = "helenecao59@gmail.com")
+    private String mail;
+    @Schema(required = true,minLength = 8,maxLength = 20 ,example = "toto%1234")
     private String password;
-    private String role;
+
 
 }

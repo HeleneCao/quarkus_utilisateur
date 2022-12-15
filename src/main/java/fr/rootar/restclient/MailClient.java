@@ -1,4 +1,4 @@
-package fr.rootar.mailclient;
+package fr.rootar.restclient;
 
 
 import fr.rootar.dto.MailDto;
@@ -8,9 +8,10 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+@Path("/mail")
 @RegisterRestClient
-@Path("/mailer")
 public interface MailClient {
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)

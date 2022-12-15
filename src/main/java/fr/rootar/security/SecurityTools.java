@@ -22,8 +22,8 @@ public class SecurityTools {
                 .sign();
     }
 
-    private static String algorithm = "AES";
-    private static SecretKeySpec secretKey = new SecretKeySpec("TheVerySecretK3Y".getBytes(),algorithm);
+   private static String algorithm = "AES";
+    private static SecretKeySpec secretKey = new SecretKeySpec("azertyuiopqsdfgh".getBytes(),algorithm);
 
     public static String encrypt(String data) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
 
