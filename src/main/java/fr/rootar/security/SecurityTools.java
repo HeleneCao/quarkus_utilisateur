@@ -2,24 +2,28 @@ package fr.rootar.security;
 
 import fr.rootar.entities.UtilisateurEntity;
 import io.smallrye.jwt.build.Jwt;
+import org.eclipse.microprofile.jwt.Claims;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
+import javax.enterprise.context.RequestScoped;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
 import java.util.Base64;
-
+@RequestScoped
 public class SecurityTools {
     public static String getToken(UtilisateurEntity utilisateur) {
-        return Jwt.issuer("https://example.com/issuer")
+        String token= Jwt.issuer("https://example.com/issuer")
                 .expiresIn(Duration.ofMinutes(20))
                 .upn(utilisateur.getLogin())
                 .groups(utilisateur.getRole())
                 .sign();
+        System.out.println(token);
+        return token;
     }
 
    private static String algorithm = "AES";

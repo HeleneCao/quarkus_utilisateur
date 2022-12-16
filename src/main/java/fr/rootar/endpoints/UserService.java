@@ -11,6 +11,7 @@ import fr.rootar.restclient.MailClient;
 import fr.rootar.repositories.UserRepository;
 import fr.rootar.security.SecurityTools;
 import io.quarkus.elytron.security.common.BcryptUtil;
+import io.quarkus.security.Authenticated;
 import org.eclipse.microprofile.jwt.Claim;
 import org.eclipse.microprofile.jwt.Claims;
 import org.eclipse.microprofile.jwt.JsonWebToken;
@@ -18,6 +19,8 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
@@ -35,13 +38,13 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-
+@Authenticated
 @Path("/users")
 @Tag(name="UserService")
 
 public class UserService {
 
-    @Inject
+   @Inject
     JsonWebToken jsonWebToken;
 
     @Inject
@@ -56,19 +59,26 @@ public class UserService {
     @RestClient
     MailClient mailClient;
 
+
     @POST
     @Path("/authentification")
+
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response getToken(@HeaderParam("login") String login, @HeaderParam("password") String password){
         UtilisateurEntity utilisateur=userRepository.findById(login);
+        //String token = SecurityTools.getToken(utilisateur);
+        //System.out.println(token);
         if (utilisateur == null){
             return Response.ok("login inconnu !").status(404).build();
         }
-
+        System.out.println(utilisateur.getPassword());
+        System.out.println(password);
         if(BcryptUtil.matches(password, utilisateur.getPassword())){
+
             String token = SecurityTools.getToken(utilisateur);
-            return Response.ok(token).build();
+
+            return Response.ok().header("Authorization",token).build();
 
         }
         return Response.ok().status(Response.Status.FORBIDDEN).build();
