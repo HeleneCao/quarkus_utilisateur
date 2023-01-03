@@ -22,7 +22,6 @@ public class SecurityTools {
                 .upn(utilisateur.getLogin())
                 .groups(utilisateur.getRole())
                 .sign();
-        System.out.println(token);
         return token;
     }
 

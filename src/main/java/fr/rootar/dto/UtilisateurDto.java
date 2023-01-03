@@ -15,6 +15,7 @@ public class UtilisateurDto {
     private String mail;
     @Schema(required = true,minLength = 8,maxLength = 20 ,example = "toto%1234")
     private String password;
-
+    /*@Schema(required = true,example = "user")
+    private String role;*/
 
 }

@@ -1,8 +1,5 @@
 package fr.rootar.endpoints;
 
-
-
-
 import fr.rootar.Validator;
 import fr.rootar.dto.MailDto;
 import fr.rootar.dto.UtilisateurDto;
@@ -17,22 +14,17 @@ import org.eclipse.microprofile.jwt.Claims;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
-
-
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.inject.Inject;
-
 import javax.transaction.Transactional;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
-import java.net.URI;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -62,28 +54,27 @@ public class UserService {
 
     @POST
     @Path("/authentification")
-
+    @PermitAll
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response getToken(@HeaderParam("login") String login, @HeaderParam("password") String password){
         UtilisateurEntity utilisateur=userRepository.findById(login);
-        //String token = SecurityTools.getToken(utilisateur);
-        //System.out.println(token);
         if (utilisateur == null){
             return Response.ok("login inconnu !").status(404).build();
         }
-        System.out.println(utilisateur.getPassword());
-        System.out.println(password);
         if(BcryptUtil.matches(password, utilisateur.getPassword())){
 
             String token = SecurityTools.getToken(utilisateur);
-
+            System.out.println(token.toString());
             return Response.ok().header("Authorization",token).build();
 
         }
         return Response.ok().status(Response.Status.FORBIDDEN).build();
     }
 
+
+
+    @PermitAll
     @Transactional
     @POST
     @Produces(MediaType.APPLICATION_JSON)
@@ -122,7 +113,7 @@ public class UserService {
         mailClient.sendMail(mailDto, "ItsOKForYou");
         return Response.ok().status(200).build();
     }
-
+    @PermitAll
     @Transactional
     @GET
     @Path("/confirm")
@@ -149,6 +140,19 @@ public class UserService {
         return  Response.ok("Compte activé").build();
 
 
+    }
+    @RolesAllowed("admin")
+    @Transactional
+    @GET
+    @Path("/details_users")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response detailUser(@HeaderParam("login") String login, @HeaderParam("password") String password){
+
+        UtilisateurEntity utilisateur=userRepository.findById(login);
+        if (utilisateur.getLogin().equals(login) && BcryptUtil.matches(password, utilisateur.getPassword()))
+            return  Response.ok(utilisateur).build();
+
+        return Response.status(Response.Status.BAD_REQUEST).build();
     }
 
 }
