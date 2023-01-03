@@ -141,7 +141,7 @@ public class UserService {
 
 
     }
-    @RolesAllowed("admin")
+    @RolesAllowed("user")
     @Transactional
     @GET
     @Path("/details_users")
@@ -154,5 +154,6 @@ public class UserService {
 
         return Response.status(Response.Status.BAD_REQUEST).build();
     }
+
 
 }
